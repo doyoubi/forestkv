@@ -2,6 +2,8 @@
 name = "libforestdb-sys"
 version = "0.1.0"
 authors = ["doyoubi <doyoubihgx@gmail.com>"]
+
+links = "forestdb"
 build = "src/build.rs"
 
 [dependencies]

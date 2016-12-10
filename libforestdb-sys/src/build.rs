@@ -3,6 +3,7 @@ use std::path::Path;
 use std::process::Command;
 use std::env::{var, set_current_dir};
 
+
 fn run(cmd: &mut Command) {
     println!("running: {:?}", cmd);
     assert!(cmd.status()
@@ -20,9 +21,19 @@ fn main() {
     let lib_dir = out_dir.join("lib");
     fs::create_dir_all(&lib_dir).unwrap();
 
-    set_current_dir(&build_dir).unwrap();
-    run(Command::new("cmake").arg(root_dir.join("forestdb")));
-    run(Command::new("make").arg("all"));
+    let profile = "RelWithDebugInfo";
 
-    println!("Successfully build forestdb");
+    set_current_dir(&build_dir).unwrap();
+    run(Command::new("cmake")
+        .arg(root_dir.join("forestdb"))
+        .arg(format!("-DCMAKE_BUILD_TYPE={}", profile))
+        .arg(format!("-DCMAKE_LIBRARY_OUTPUT_DIRECTORY={}", lib_dir.display()))
+        .arg("-DSNAPPY_OPTION=Disable")
+        );
+
+    run(Command::new("cmake")
+        .arg("--build").arg(".")
+        .arg("--target").arg("forestdb"));
+
+    println!("cargo:rustc-flags=-l forestdb -L {}", lib_dir.display());
 }

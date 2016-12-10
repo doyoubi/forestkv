@@ -38,7 +38,7 @@ pub type wchar_t = ::std::os::raw::c_int;
 pub const FDB_RESULT_LAST: fdb_status = fdb_status::FDB_RESULT_LOCK_FAIL;
 #[derive(Copy, Clone)]
 #[repr(i32)]
-#[derive(Debug)]
+#[derive(Debug, Eq, PartialEq)]
 pub enum fdb_status {
     FDB_RESULT_SUCCESS = 0,
     FDB_RESULT_INVALID_ARGS = -1,
@@ -531,9 +531,9 @@ pub enum Enum_Unnamed3 {
 }
 pub type fdb_commit_opt_t = uint8_t;
 #[derive(Copy, Clone)]
-#[repr(u32)]
+#[repr(u8)]
 #[derive(Debug)]
-pub enum Enum_Unnamed4 {
+pub enum FDB_COMMIT_OPT {
     FDB_COMMIT_NORMAL = 0,
     FDB_COMMIT_MANUAL_WAL_FLUSH = 1,
 }
@@ -1014,12 +1014,12 @@ extern "C" {
     pub fn gnu_dev_makedev(__major: ::std::os::raw::c_uint,
                            __minor: ::std::os::raw::c_uint)
      -> ::std::os::raw::c_ulonglong;
-    pub fn fdb_init(config: *mut fdb_config) -> fdb_status;
+    pub fn fdb_init(config: *const fdb_config) -> fdb_status;
     pub fn fdb_get_default_config() -> fdb_config;
     pub fn fdb_get_default_kvs_config() -> fdb_kvs_config;
     pub fn fdb_open(ptr_fhandle: *mut *mut fdb_file_handle,
                     filename: *const ::std::os::raw::c_char,
-                    fconfig: *mut fdb_config) -> fdb_status;
+                    fconfig: *const fdb_config) -> fdb_status;
     pub fn fdb_open_custom_cmp(ptr_fhandle: *mut *mut fdb_file_handle,
                                filename: *const ::std::os::raw::c_char,
                                fconfig: *mut fdb_config,
@@ -1184,7 +1184,7 @@ extern "C" {
     pub fn fdb_kvs_open(fhandle: *mut fdb_file_handle,
                         ptr_handle: *mut *mut fdb_kvs_handle,
                         kvs_name: *const ::std::os::raw::c_char,
-                        config: *mut fdb_kvs_config) -> fdb_status;
+                        config: *const fdb_kvs_config) -> fdb_status;
     pub fn fdb_kvs_open_default(fhandle: *mut fdb_file_handle,
                                 ptr_handle: *mut *mut fdb_kvs_handle,
                                 config: *mut fdb_kvs_config) -> fdb_status;
@@ -1207,3 +1207,6 @@ extern "C" {
                                   ctx: *mut ::std::os::raw::c_void)
      -> fdb_status;
 }
+
+#[cfg(test)]
+mod tests;
