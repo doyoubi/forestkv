@@ -1,10 +1,8 @@
 [package]
-name = "forestkv"
+name = "libforestdb-sys"
 version = "0.1.0"
 authors = ["doyoubi <doyoubihgx@gmail.com>"]
-
-[dependencies.libforestdb-sys]
-path = "libforestdb-sys"
+build = "src/build.rs"
 
 [dependencies]
 libc = "0.2"
