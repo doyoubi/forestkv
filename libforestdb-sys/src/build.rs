@@ -2,6 +2,7 @@ use std::fs;
 use std::path::Path;
 use std::process::Command;
 use std::env::{var, set_current_dir};
+use std::io::ErrorKind;
 
 
 fn run(cmd: &mut Command) {
@@ -12,6 +13,15 @@ fn run(cmd: &mut Command) {
 }
 
 fn main() {
+    // Check dependency
+    if let Err(e) = Command::new("cmake").status() {
+        if let ErrorKind::NotFound = e.kind() {
+            panic!("cmake not found");
+        } else {
+            panic!("unexpected error {:?}", e);
+        }
+    }
+
     let cargo_manifest_dir = var("CARGO_MANIFEST_DIR").unwrap();
     let out_dir = var("OUT_DIR").unwrap();
     let root_dir = Path::new(&cargo_manifest_dir);
